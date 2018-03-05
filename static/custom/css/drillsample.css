@@ -1,0 +1,69 @@
+body{
+    background-color: #eee !important;
+}
+.cursor-pointer{
+    cursor:pointer;
+}
+
+
+/* Dashboard TABLE ---------------------------------*/
+
+
+
+/* No borders table */
+.table-noborder .dataTables_wrapper table,
+.table-noborder .dataTables_wrapper td,
+.table-noborder .dataTables_wrapper th{
+    border:none;
+}
+
+
+/* Transparent background table */
+.table-transparent table.dataTable tbody tr,
+.table-transparent .table-striped > tbody > tr:nth-child(odd) > td, 
+.table-transparent .table-striped > tbody > tr:nth-child(odd) > th,
+.table-transparent .table-striped > tbody > tr:nth-child(even) > td, 
+.table-transparent .table-striped > tbody > tr:nth-child(even) > th{
+    background:transparent
+}
+
+
+/* Align all number cols to the right */
+.table-numright .dataTables_wrapper td.numeric,
+.table-numright .dataTables_wrapper th.numeric{
+    text-align:right;
+}
+
+
+/* Fixes padding on the headers to match the column contents */
+.table-fixpadding table.dataTable thead th, 
+.table-fixpadding table.dataTable thead td,
+.table-fixpadding table.dataTable thead th, 
+.table-fixpadding table.dataTable thead td{
+    padding: 8px 10px;
+}
+
+
+/* Places a border before the pagination */
+.table-lowerborder table.dataTable{
+    border-bottom:solid 1px #ccc;
+}
+    
+
+/* Fixes padding on the headers to match the column contents */
+.table-headersep .dataTables_wrapper table.dataTable thead th, 
+.table-headersep .dataTables_wrapper table.dataTable thead td{
+    border-bottom:solid 1px #ccc;
+}
+
+
+/* Displays clickable cursor */
+.table-clickable table.dataTable tbody {
+    cursor:pointer;
+}
+
+
+.table-fixexpand .table-striped > tbody > tr:nth-child(odd) > td.expandingClass,
+.table-fixexpand .table-striped > tbody > tr:nth-child(even) > td.expandingClass{
+    background-color:#fff;
+}

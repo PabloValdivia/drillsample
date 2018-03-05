@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+   <DataSources>
+      <Connection id="TableQuery" type="mondrian.jndi">
+         <Catalog>mondrian:/SteelWheels</Catalog>
+         <Jndi>SampleData</Jndi>
+      </Connection>
+   </DataSources>
+   <DataAccess access="public" connection="TableQuery" id="TableQuery" type="mdx">
+      <Name>TableQuery</Name>
+      <BandedMode>compact</BandedMode>
+      <Cache duration="3600" enabled="true"/>
+      <Columns/>
+      <Parameters/>
+      <Query><![CDATA[WITH
+SET [*NATIVE_CJ_SET] AS 'FILTER([Product].[Vendor].MEMBERS, NOT ISEMPTY ([Measures].[Sales]) OR NOT ISEMPTY ([Measures].[Quantity]))'
+SET [*SORTED_ROW_AXIS] AS 'ORDER([*CJ_ROW_AXIS],ANCESTOR([Product].CURRENTMEMBER, [Product].[Line]).ORDERKEY,BASC,[Measures].[*SORTED_MEASURE],BDESC)'
+SET [*BASE_MEMBERS__Measures_] AS '{[Measures].[*FORMATTED_MEASURE_0],[Measures].[*FORMATTED_MEASURE_1]}'
+SET [*BASE_MEMBERS__Product_] AS '[Product].[Vendor].MEMBERS'
+SET [*CJ_ROW_AXIS] AS 'GENERATE([*NATIVE_CJ_SET], {([Product].CURRENTMEMBER)})'
+MEMBER [Measures].[*FORMATTED_MEASURE_0] AS '[Measures].[Quantity]', FORMAT_STRING = '#,###', SOLVE_ORDER=500
+MEMBER [Measures].[*FORMATTED_MEASURE_1] AS '[Measures].[Sales]', FORMAT_STRING = '#,###', SOLVE_ORDER=500
+MEMBER [Measures].[*SORTED_MEASURE] AS '([Measures].[*FORMATTED_MEASURE_1])', SOLVE_ORDER=400
+SELECT
+[*BASE_MEMBERS__Measures_] ON COLUMNS
+, NON EMPTY
+[*SORTED_ROW_AXIS] ON ROWS
+FROM [SteelWheelsSales]]]></Query>
+   </DataAccess>
+</CDADescriptor>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+   <DataSources>
+      <Connection id="TimeQuery" type="mondrian.jndi">
+         <Catalog>mondrian:/SteelWheels</Catalog>
+         <Jndi>SampleData</Jndi>
+      </Connection>
+      <Connection id="TerritoriesQuery" type="mondrian.jndi">
+         <Catalog>mondrian:/SteelWheels</Catalog>
+         <Jndi>SampleData</Jndi>
+      </Connection>
+   </DataSources>
+   <DataAccess access="public" connection="TimeQuery" id="TimeQuery" type="mdx">
+      <Name>TimeQuery</Name>
+      <BandedMode>classic</BandedMode>
+      <Cache duration="3600" enabled="true"/>
+      <Columns/>
+      <Output indexes="3,1,4" mode="include"/>
+      <Parameters>
+         <Parameter default="" name="vendor" type="String"/>
+      </Parameters>
+      <Query><![CDATA[WITH
+SET [*NATIVE_CJ_SET_WITH_SLICER] AS 'NONEMPTYCROSSJOIN([*BASE_MEMBERS__Time_],[*BASE_MEMBERS__Product_])'
+SET [*NATIVE_CJ_SET] AS 'GENERATE([*NATIVE_CJ_SET_WITH_SLICER], {([Time].CURRENTMEMBER)})'
+SET [*SORTED_ROW_AXIS] AS 'ORDER([*CJ_ROW_AXIS],ANCESTOR([Time].CURRENTMEMBER, [Time].[Years]).ORDERKEY,BASC,[Time].CURRENTMEMBER.ORDERKEY,BASC,ANCESTOR([Time].CURRENTMEMBER,[Time].[Quarters]).ORDERKEY,BASC)'
+SET [*BASE_MEMBERS__Measures_] AS '{[Measures].[*FORMATTED_MEASURE_0]}'
+SET [*CJ_SLICER_AXIS] AS 'GENERATE([*NATIVE_CJ_SET_WITH_SLICER], {([Product].CURRENTMEMBER)})'
+SET [*BASE_MEMBERS__Product_] AS '{[Product].[All Products].[Classic Cars].[${vendor}]}'
+SET [*BASE_MEMBERS__Time_] AS '[Time].[Months].MEMBERS'
+SET [*CJ_ROW_AXIS] AS 'GENERATE([*NATIVE_CJ_SET], {([Time].CURRENTMEMBER)})'
+MEMBER [Measures].[*FORMATTED_MEASURE_0] AS '[Measures].[Sales]', FORMAT_STRING = '#,###', SOLVE_ORDER=500
+SELECT
+[*BASE_MEMBERS__Measures_] ON COLUMNS
+, NON EMPTY
+[*SORTED_ROW_AXIS] ON ROWS
+FROM [SteelWheelsSales]
+WHERE ([*CJ_SLICER_AXIS])]]></Query>
+   </DataAccess>
+   <DataAccess access="public" connection="TerritoriesQuery" id="TerritoriesQuery" type="mdx">
+      <Name>TerritoriesQuery</Name>
+      <BandedMode>compact</BandedMode>
+      <Cache duration="3600" enabled="true"/>
+      <Columns/>
+      <Parameters>
+         <Parameter default="" name="vendor" type="String"/>
+      </Parameters>
+      <Query><![CDATA[WITH
+SET [*NATIVE_CJ_SET_WITH_SLICER] AS 'NONEMPTYCROSSJOIN([*BASE_MEMBERS__Markets_],[*BASE_MEMBERS__Product_])'
+SET [*NATIVE_CJ_SET] AS 'GENERATE([*NATIVE_CJ_SET_WITH_SLICER], {([Markets].CURRENTMEMBER)})'
+SET [*SORTED_ROW_AXIS] AS 'ORDER([*CJ_ROW_AXIS],[Measures].[*SORTED_MEASURE],BDESC)'
+SET [*BASE_MEMBERS__Measures_] AS '{[Measures].[*FORMATTED_MEASURE_0]}'
+SET [*BASE_MEMBERS__Markets_] AS '[Markets].[Territory].MEMBERS'
+SET [*CJ_SLICER_AXIS] AS 'GENERATE([*NATIVE_CJ_SET_WITH_SLICER], {([Product].CURRENTMEMBER)})'
+SET [*BASE_MEMBERS__Product_] AS '{[Product].[All Products].[Classic Cars].[${vendor}]}'
+SET [*CJ_ROW_AXIS] AS 'GENERATE([*NATIVE_CJ_SET], {([Markets].CURRENTMEMBER)})'
+MEMBER [Measures].[*FORMATTED_MEASURE_0] AS '[Measures].[Sales]', FORMAT_STRING = '#,###', SOLVE_ORDER=500
+MEMBER [Measures].[*SORTED_MEASURE] AS '([Measures].[*FORMATTED_MEASURE_0])', SOLVE_ORDER=400
+SELECT
+[*BASE_MEMBERS__Measures_] ON COLUMNS
+, NON EMPTY
+[*SORTED_ROW_AXIS] ON ROWS
+FROM [SteelWheelsSales]
+WHERE ([*CJ_SLICER_AXIS])]]></Query>
+   </DataAccess>
+</CDADescriptor>
